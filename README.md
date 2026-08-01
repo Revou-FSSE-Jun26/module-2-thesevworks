@@ -21,7 +21,7 @@ design and validate the database that will power the entire store: users, produc
    ```bash
    \CREATE DATABASE revoshop_db
    ```
-3.Koneksikan database ke DBeaver / pgAdmin
+3. Koneksikan database ke DBeaver / pgAdmin
 4. Run the schema :
    Load Execute `schema.sql` file to create table first
 5. Insert Sample data :
