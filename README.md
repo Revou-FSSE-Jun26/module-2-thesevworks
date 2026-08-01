@@ -33,7 +33,7 @@ design and validate the database that will power the entire store: users, produc
 
 See the relationship diagram between tables in ERD.png (ascreenshot from pgAdmin/dbeaver diagram).
 
-![Schema Diagram](file:///C:/Users/Lenovo/Documents/Lightshot/Checkpoint%20Revoshop/ERD.png)
+![Schema Diagram] (C:\Users\Lenovo\Documents\Lightshot\Checkpoint Revoshop\ERD.png)
 
 ## Notes
 
