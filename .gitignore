@@ -1,0 +1,36 @@
+# ===== Environment & Credentials =====
+.env
+.env.local
+*.env
+secrets.json
+config/database.yml
+
+# ===== Database dumps & backups =====
+*.sql.gz
+*.dump
+*.bak
+backup/
+
+# Local database files (kalau pakai SQLite untuk testing)
+*.sqlite
+*.sqlite3
+*.db
+
+# ===== DBeaver =====
+# Folder workspace DBeaver berisi koneksi, kredensial, dan cache lokal
+.dbeaver/
+DBeaverData/
+*.dbeaver-workspace
+
+# ===== VS Code =====
+.vscode/
+*.code-workspace
+
+# ===== Windows =====
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# ===== Logs =====
+*.log
