@@ -17,36 +17,23 @@ design and validate the database that will power the entire store: users, produc
 
 1. Ensure PostgreSQL is installed and its service is running.
 
-2. Create the database:
+2. Create the **`revoshop_db`** database:
    ```bash
    \CREATE DATABASE revoshop_db
    ```
-3. Run the schema :
-   ```bash
-   psql -U postgres -d revoshop_db -f schema.sql
-   ```
-4. Insert Sample data :
-   ```bash
-   psql -U postgres -d revoshop_db -f seed.sql
-   ```
-5. Run sample queries for verification :
-   ```bash
-   psql -U postgres -d revoshop_db -f queries.sql
-   ```
+3.Koneksikan database ke DBeaver / pgAdmin
+4. Run the schema :
+   Load Execute `schema.sql` file to create table first
+5. Insert Sample data :
+   input data sample from `seed.sql`
+6. Run sample queries for verification :
+   run `queries.sql` to validate the quearies
 
 # ERD
 
-See the relationship diagram between tables in erd.png (screenshot from pgAdmin/dbeaver diagram).
+See the relationship diagram between tables in ERD.png (ascreenshot from pgAdmin/dbeaver diagram).
 
-Relationship summary:
-
-- users (1) — (N) orders
-
-- categories (1) — (N) products
-
-- orders (1) — (N) order_items
-
-- products (1) — (N) order_items
+![Schema Diagram](file:///C:/Users/Lenovo/Documents/Lightshot/Checkpoint%20Revoshop/ERD.png)
 
 ## Notes
 
