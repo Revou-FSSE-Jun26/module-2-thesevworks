@@ -5,6 +5,13 @@
 secrets.json
 config/database.yml
 
+# ===== Python =====
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
 # ===== Database dumps & backups =====
 *.sql.gz
 *.dump
