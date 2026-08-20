@@ -52,7 +52,15 @@ class Product(db.Model):
 
     category = db.relationship('Category', primaryjoin='Product.category_id == Category.id', backref='products')
 
-
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "category_id": self.category_id,
+            "product_name": self.product_name,
+            "description": self.description,
+            "price": self.price,
+            "stock": self.stock
+        }
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -60,5 +68,14 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, server_default=db.FetchedValue())
     username = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False, unique=True)
-    password_hash = db.Column(db.String(50), nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.FetchedValue())
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "name": self.email,
+            "password_hash": self.password_hash
+        }
+
