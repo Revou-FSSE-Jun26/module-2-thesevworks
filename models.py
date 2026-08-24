@@ -37,7 +37,14 @@ class Order(db.Model):
 
     user = db.relationship('User', primaryjoin='Order.user_id == User.id', backref='orders')
 
-
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "total_amount": self.total_amount if self.total_amount is not None else 0,
+            "status": self.status,
+            "ordered_at": self.ordered_at.isoformat() if self.ordered_at else None
+        }
 
 class Product(db.Model):
     __tablename__ = 'products'
