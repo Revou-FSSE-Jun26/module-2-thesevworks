@@ -26,14 +26,19 @@ migrate.init_app(app,db)
 
 from routes.products_routes import products_bp
 from routes.users_routes import users_bp
+from routes.orders_routes import orders_bp
 from auth_routes import auth_bp
 
 
 app.register_blueprint(products_bp, url_prefix="/products")
 app.register_blueprint(users_bp, url_prefix="/users")
+app.register_blueprint(orders_bp, url_prefix="/orders")
 app.register_blueprint(auth_bp, url_prefix="/auth")
 
 
+@app.route('/')
+def home():
+    return 'Welcome to Sevoshop!'
 
 
 if __name__ == "__main__":
