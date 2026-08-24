@@ -70,7 +70,7 @@ class User(db.Model):
     username = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False, unique=True)
     password_hash = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(25), nullable=False, default="buyer")
+    role = db.Column(db.String(25), nullable=False, server_default="buyer")
     created_at = db.Column(db.DateTime, server_default=db.FetchedValue())
 
     def to_dict(self):
