@@ -26,38 +26,14 @@ migrate.init_app(app,db)
 
 from routes.products_routes import products_bp
 from routes.users_routes import users_bp
-# from auth_routes import auth_bp
+from auth_routes import auth_bp
 
 
 app.register_blueprint(products_bp, url_prefix="/products")
 app.register_blueprint(users_bp, url_prefix="/users")
-# app.register_blueprint(auth_bp, url_prefix="/auth")
+app.register_blueprint(auth_bp, url_prefix="/auth")
 
 
-# ---------------------------------------------------------
-@app.route("/", methods=["GET"])
-def home():
-    return jsonify({"message": "Flask is connected to PostgreSQL!", "status": "ok"})
-
-@app.route('/category')
-def category():
-    return 'List of all category goes here'
-
-@app.route('/orders')
-def orders():
-    return 'List of all orders goes here'
-
-@app.route('/orders_item')
-def orders_item():
-    return 'List of all orders_item goes here'
-    
-@app.route('/products')
-def products():
-    return 'List of all products goes here'
-
-@app.route('/users')
-def users():
-    return 'List of all users goes here'
 
 
 if __name__ == "__main__":
