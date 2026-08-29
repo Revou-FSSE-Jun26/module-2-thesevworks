@@ -37,4 +37,50 @@ See the relationship diagram between tables in ERD.png (ascreenshot from pgAdmin
 
 ## Notes
 
-The role column in the users table has been intentionally omitted at this stage — it will be introduced via a live schema migration in Checkpoint 2.
+[POSTMAN LINK OF DOCUMENTATION]
+
+https://documenter.getpostman.com/view/57336695/2sBYAuSWRk
+
+## How to Run the Project Locally
+
+### 1. Clone & buat virtual environment
+```bash
+git clone <url-repo-ini>
+cd revoshop
+python -m venv venv
+venv\Scripts\activate      # Windows
+# source venv/bin/activate  # macOS/Linux
+```
+
+### 2. Install dependency
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Konfigurasi environment variable
+Copy `.env.example` menjadi `.env`, lalu isi sesuai koneksi lokal Anda:
+```
+SQLALCHEMY_DATABASE_URI=postgresql://username:password@localhost:5432/revoshop_db
+SECRET_KEY=<random-string-apa-saja>
+DEBUG=True
+```
+> `.env` sudah masuk `.gitignore` — jangan pernah commit kredensial asli.
+
+### 4. Jalankan migrasi database
+```bash
+set FLASK_APP=run.py          # Windows (gunakan `export` di macOS/Linux)
+flask db upgrade
+```
+(Riwayat migrasi lengkap — termasuk migration awal dan migration penambahan kolom `role` secara terpisah — sudah ada di folder `migrations/` dari Checkpoint 2.)
+
+### 5. Isi sample data
+```bash
+python seed.py
+```
+Mengisi users, categories, products, dan 1 order yang terhubung ke 2 produk sekaligus (bukti many-to-many). Kredensial login untuk testing akan tercetak di terminal.
+
+### 6. Jalankan aplikasi
+```bash
+python run.py
+```
+Server berjalan di `http://127.0.0.1:5000`.
