@@ -27,7 +27,7 @@ migrate.init_app(app,db)
 from routes.products_routes import products_bp
 from routes.users_routes import users_bp
 from routes.orders_routes import orders_bp
-from auth_routes import auth_bp
+from routes.auth_routes import auth_bp
 
 
 app.register_blueprint(products_bp, url_prefix="/products")
