@@ -1,5 +1,6 @@
 from models import User
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
+from app import db
 # from validation import admin_required
 from flask_jwt_extended import jwt_required 
 
@@ -25,3 +26,54 @@ def get_user_by_id(user_id):
             return jsonify({"error": "User not found"}), 404
     except Exception as e : 
         return jsonify({"error": str(e)}), 500
+
+@users_bp.route("/", methods=["POST"]) 
+def create_users():
+    try:
+        data = request.get_json()
+
+        # validation
+        if not data:
+            return jsonify({"error": "Request body must be JSON"}), 400
+
+        username = data.get("username")
+        email = data.get("email")
+        password = data.get("password")
+
+        required_fields = {"username": username, "email": email, "password": password}
+        missing = [field for field, value in required_fields.items() if not value]
+        if missing:
+            return jsonify({"error": f"Missing required fields: {', '.join(missing)}"}), 400
+
+        if "@" not in email or "." not in email:
+            return jsonify({"error": "Invalid email format"}), 400
+
+        if len(password) < 6:
+            return jsonify({"error": "Password must be at least 6 characters"}), 400
+
+        if User.query.filter_by(email=email).first():
+            return jsonify({"error": "Email already registered"}), 409
+
+        new_user = User(
+            username=username,
+            email=email
+        )
+        new_user.hashing_password(password)
+
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({
+            "message": "new_user created",
+            "user": new_user.to_dict(),
+            "status": "success"
+        }), 201
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error creating user: {e}")
+        return jsonify({
+            "message": "Error creating User",
+            "user": "Not valid",
+            "status": "error"
+        }), 400
