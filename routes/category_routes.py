@@ -30,7 +30,7 @@ def get_category_by_id(category_id):
 @category_bp.route("/", methods=["POST"]) 
 def create_category():
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True)
 
         # validation
         if not data:
