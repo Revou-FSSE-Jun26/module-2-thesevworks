@@ -104,7 +104,7 @@ CATEGORY = [
 ]
 
 # sample data for POST create new Category
-#     (11, "Kecantikan & Make Up", "Produk perawatan wajah dan make up", "2024-01-10 08:50:00"),
+#     (11, "Make Up", "Produk perawatan wajah dan make up", "2024-01-10 08:50:00"),
 #     (12, "Perlengkapan Bayi","Popok, susu formula, dan perlengkapan bayi lainnya", "2024-01-10 08:55:00"),
 #     (13, "Perhiasan & Aksesoris", "Perhiasan emas, perak, dan permata", "2024-01-10 08:50:00"),
 #     (14, "Kamera & Foto", "Kamera digital dan aksesori fotografi", "2024-01-10 09:15:00"),
