@@ -68,3 +68,61 @@ def create_category():
             "category": "Not valid",
             "status": "error"
         }), 400
+
+@category_bp.route("/<int:category_id>", methods=["PUT"])
+def update_category(category_id):
+    category = Category.query.get(category_id)
+    if category is None:
+        return jsonify({"error": "Category not found"}), 404
+
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"error": "Request body must be JSON"}), 400
+
+    # Partial update
+    if data.get("category_name") is not None:
+        category_name = data["category_name"]
+        if len(category_name) > 50:
+            return jsonify({"error": "category_name must be 50 characters or fewer"}), 400
+        existing = Category.query.filter_by(category_name=category_name).first()
+        if existing and existing.id != category.id:
+            return jsonify({"error": "Category already exists"}), 409
+        category.category_name = category_name
+
+    if data.get("description") is not None:
+        category.description = data["description"]
+
+    try:
+        db.session.commit()
+        return jsonify({
+            "message": "Category updated successfully",
+            "category": category.to_dict(),
+            "status": "ok"
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error updating category: {e}")
+        return jsonify({"error": "Error updating category"}), 500
+
+
+@category_bp.route("/<int:category_id>", methods=["DELETE"])
+def delete_category(category_id):
+    category = Category.query.get(category_id)
+    if category is None:
+        return jsonify({"message": "Category not found", "status": "error"}), 404
+
+    category_data = category.to_dict()
+
+    try:
+        db.session.delete(category)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting category: {e}")
+        return jsonify({"error": "Error deleting category"}), 500
+
+    return jsonify({
+        "message": "Category deleted successfully",
+        "category": category_data,
+        "status": "ok"
+    }), 200
