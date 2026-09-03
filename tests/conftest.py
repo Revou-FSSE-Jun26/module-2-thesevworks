@@ -30,27 +30,27 @@ def app():
         _db.session.flush()  # get category.id
 
         product1 = Product(
-            product_name="Laptop Gaming",
+            product_name="Laptop",
             description="High-end laptop",
-            price=2999.99,
+            price=5999.99,
             stock=1,
             category_id=category.id,
         )
         product2 = Product(
-            product_name="Webcam",
-            description="HD webcam",
+            product_name="Mechanical Keyboard",
+            description="Clicky Keyboard",
             price=99.99,
-            stock=2,
+            stock=20,
             category_id=category.id,
         )
         _db.session.add_all([product1, product2])
 
-        user = User(username="John", email="johntest123@email.com", role="buyer")
+        user = User(username="Joko", email="jokotest123@email.com", role="buyer")
         user.hashing_password("testpassword123")
         _db.session.add(user)
         _db.session.flush()  # get user.id
 
-        order = Order(user_id=user.id, total_amount=2999.99, status="pending")
+        order = Order(user_id=user.id, total_amount=5999.99, status="pending")
         _db.session.add(order)
 
         _db.session.commit()
@@ -64,10 +64,3 @@ def app():
 @pytest.fixture()
 def client(app):
     return app.test_client()
-
-
-@pytest.fixture()
-def db_session(app):
-    """Provides a clean session; rolls back changes made within a test."""
-    yield _db.session
-    _db.session.rollback()
