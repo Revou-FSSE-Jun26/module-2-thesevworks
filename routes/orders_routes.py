@@ -123,10 +123,9 @@ def delete_order(order_id):
     if order is None:
         return jsonify({"message": "Order not found", "status": "error"}), 404
 
-    order_data = order.to_dict()
-
+    
     try:
-        db.session.delete(order)
+        order.is_deleted = True
         db.session.commit()
     except Exception as e:
         db.session.rollback()
@@ -135,6 +134,6 @@ def delete_order(order_id):
 
     return jsonify({
         "message": "Order deleted successfully",
-        "order": order_data,
+        "order": order.to_dict(),
         "status": "ok"
     }), 200
