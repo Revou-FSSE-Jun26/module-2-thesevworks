@@ -10,7 +10,7 @@ orders_bp = Blueprint('orders', __name__)
 # @jwt_required() 
 # @admin_required 
 def get_orders(): 
-    orders = Order.query.all()
+    orders = Order.query.filter_by(is_deleted=False).all()
 
     return jsonify([ 
         order.to_dict() 
@@ -20,7 +20,7 @@ def get_orders():
 def get_order_by_id(order_id):
     try:
         order = Order.query.get(order_id)
-        if order:
+        if order and not order.is_deleted:
             return jsonify(order.to_dict()), 200
         else:
             return jsonify({"error": "Order not found"}), 404
@@ -120,10 +120,9 @@ def update_order(order_id):
 @orders_bp.route("/<int:order_id>", methods=["DELETE"])
 def delete_order(order_id):
     order = Order.query.get(order_id)
-    if order is None:
+    if order is None or order.is_deleted:
         return jsonify({"message": "Order not found", "status": "error"}), 404
 
-    
     try:
         order.is_deleted = True
         db.session.commit()
