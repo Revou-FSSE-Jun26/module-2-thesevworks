@@ -43,6 +43,7 @@ class Order(db.Model):
     total_amount = db.Column(db.Numeric(15, 2), nullable=False)
     status = db.Column(db.String(20), nullable=False)
     ordered_at = db.Column(db.DateTime, server_default=db.FetchedValue())
+    is_deleted = db.Column(db.Boolean, nullable=False, default=False, server_default=db.text("false"))
 
     user = db.relationship('User', primaryjoin='Order.user_id == User.id', backref='orders')
 
@@ -52,7 +53,8 @@ class Order(db.Model):
             "user_id": self.user_id,
             "total_amount": self.total_amount if self.total_amount is not None else 0,
             "status": self.status,
-            "ordered_at": self.ordered_at.isoformat() if self.ordered_at else None
+            "ordered_at": self.ordered_at.isoformat() if self.ordered_at else None,
+            "is_deleted": self.is_deleted
         }
 
 class Product(db.Model):
