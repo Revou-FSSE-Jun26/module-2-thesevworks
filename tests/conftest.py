@@ -1,12 +1,21 @@
 import os
 import pytest
+from dotenv import load_dotenv
+
+# Load variables from the (gitignored) .env file so no secrets live in code.
+load_dotenv()
 
 # Point the app at a dedicated TEST database BEFORE importing app,
-# so we never touch the development data.
-os.environ.setdefault(
-    "DATABASE_URL",
-    "postgresql://postgres:supersev@localhost:5432/revoshop_test_db",
-)
+# so we never touch the development data. The URL comes from TEST_DATABASE_URL
+# in your .env — it is never hardcoded here.
+test_db_url = os.getenv("TEST_DATABASE_URL")
+if not test_db_url:
+    raise RuntimeError(
+        "TEST_DATABASE_URL is not set. Add it to your .env file, e.g.\n"
+        "TEST_DATABASE_URL=postgresql://user:password@localhost:5432/revoshop_test_db"
+    )
+
+os.environ["DATABASE_URL"] = test_db_url
 os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key")
 
 from app import app as flask_app, db as _db
