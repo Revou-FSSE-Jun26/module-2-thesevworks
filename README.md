@@ -1,5 +1,7 @@
 # RevoShop API
 
+**Live deployment:** https://sevoshop.onrender.com/
+
 ## 1. Overview
 
 RevoShop is an online store REST API that powers the core of an e-commerce
