@@ -45,8 +45,11 @@ def create_product():
         except (ValueError, TypeError):
             return jsonify({"error": "price must be a number and stock must be an integer"}), 400
 
-        if price < 0 or stock < 0:
-            return jsonify({"error": "price and stock cannot be negative"}), 400
+        if price <= 0:
+            return jsonify({"error": "price must be greater than 0"}), 400
+
+        if stock < 0:
+            return jsonify({"error": "stock cannot be negative"}), 400
 
         new_product = Product(
             category_id=data["category_id"],
@@ -97,8 +100,8 @@ def update_product(product_id):
             price = float(data['price'])
         except (ValueError, TypeError):
             return jsonify({"error": "price must be a number"}), 400
-        if price < 0:
-            return jsonify({"error": "price cannot be negative"}), 400
+        if price <= 0:
+            return jsonify({"error": "price must be greater than 0"}), 400
         product.price = price
 
     if data.get('stock') is not None:

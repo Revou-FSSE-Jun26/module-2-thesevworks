@@ -58,6 +58,41 @@ def test_create_product_negative_price(client):
     assert resp.status_code == 400
 
 
+def test_create_product_zero_price(client):
+    category = client.get("/category/").get_json()[0]
+    resp = client.post("/products/", json={
+        "category_id": category["id"],
+        "product_name": "ZeroPrice",
+        "price": 0,
+        "stock": 10
+    })
+    assert resp.status_code == 400
+    assert "price must be greater than 0" in resp.get_json()["error"]
+
+
+def test_create_product_negative_stock(client):
+    category = client.get("/category/").get_json()[0]
+    resp = client.post("/products/", json={
+        "category_id": category["id"],
+        "product_name": "NegStock",
+        "price": 10,
+        "stock": -1
+    })
+    assert resp.status_code == 400
+    assert "stock cannot be negative" in resp.get_json()["error"]
+
+
+def test_create_product_zero_stock_allowed(client):
+    category = client.get("/category/").get_json()[0]
+    resp = client.post("/products/", json={
+        "category_id": category["id"],
+        "product_name": "ZeroStock",
+        "price": 10,
+        "stock": 0
+    })
+    assert resp.status_code == 201
+
+
 def test_create_product_invalid_price_type(client):
     category = client.get("/category/").get_json()[0]
     resp = client.post("/products/", json={
