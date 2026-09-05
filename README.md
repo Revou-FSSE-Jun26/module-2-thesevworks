@@ -149,6 +149,16 @@ locust -f locustfile.py --host http://localhost:5000
 ```
 Open `http://localhost:8089` to configure the number of virtual users and start the test.
 
+### Locust Results
+
+**Statistics**
+
+![Locust Statistics](Snapshot/Locust_Statistic.png)
+
+**Charts**
+
+![Locust Charts](Snapshot/Locust_Charts.png)
+
 ---
 
 ## Database Design
