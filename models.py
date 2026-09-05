@@ -34,6 +34,16 @@ class OrderItem(db.Model):
     order = db.relationship('Order', primaryjoin='OrderItem.order_id == Order.id', backref='order_items')
     product = db.relationship('Product', primaryjoin='OrderItem.product_id == Product.id', backref='order_items')
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "order_id": self.order_id,
+            "product_id": self.product_id,
+            "quantity": self.quantity,
+            "price_at_purchase": float(self.price_at_purchase) if self.price_at_purchase is not None else 0,
+            "subtotal": float(self.price_at_purchase) * self.quantity if self.price_at_purchase is not None else 0,
+        }
+
 
 
 class Order(db.Model):
@@ -48,15 +58,18 @@ class Order(db.Model):
 
     user = db.relationship('User', primaryjoin='Order.user_id == User.id', backref='orders')
 
-    def to_dict(self):
-        return {
+    def to_dict(self, include_items=False):
+        data = {
             "id": self.id,
             "user_id": self.user_id,
-            "total_amount": self.total_amount if self.total_amount is not None else 0,
+            "total_amount": float(self.total_amount) if self.total_amount is not None else 0,
             "status": self.status,
             "ordered_at": self.ordered_at.isoformat() if self.ordered_at else None,
             "is_deleted": self.is_deleted
         }
+        if include_items:
+            data["items"] = [item.to_dict() for item in self.order_items]
+        return data
 
 class Product(db.Model):
     __tablename__ = 'products'
