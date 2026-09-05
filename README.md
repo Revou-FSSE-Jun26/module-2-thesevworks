@@ -136,6 +136,9 @@ pytest -v
 The tests run against a dedicated `revoshop_test_db` database (create it once with
 `CREATE DATABASE revoshop_test_db;`) so your development data is never touched.
 
+![pytest screenshot](Snapshot/Pytest_Check.png)
+
+
 ## Load Testing
 
 Start the server, then in another terminal run Locust:
@@ -158,10 +161,10 @@ The schema stores five entities:
   with `order_id` and `product_id` as foreign keys plus quantity and price at purchase.
 
 ### ERD
-See the relationship diagram between tables in `ERD.png` (a screenshot from the
+See the relationship diagram between tables in `Snapshot/ERD.png` (a screenshot from the
 pgAdmin/DBeaver diagram).
 
-![Schema Diagram](ERD.png)
+![Schema Diagram](Snapshot/ERD.png)
 
 ## API Documentation
 
