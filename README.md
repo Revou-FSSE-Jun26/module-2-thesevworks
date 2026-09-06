@@ -159,6 +159,10 @@ Open `http://localhost:8089` to configure the number of virtual users and start 
 
 ![Locust Charts](Snapshot/Locust_Charts.png)
 
+**Failures**
+
+![Locust Failures](Snapshot/Locust_Failures.png)
+
 ---
 
 ## Database Design
