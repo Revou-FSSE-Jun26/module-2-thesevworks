@@ -22,6 +22,7 @@ from datetime import datetime
 
 import psycopg2
 from psycopg2.extras import execute_values
+from werkzeug.security import generate_password_hash
 
 DATABASE_URL = os.environ.get(
     "DATABASE_URL", "postgresql://postgres:supersev@localhost:5432/revoshop_db"
@@ -40,12 +41,12 @@ CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    password_hash VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
     created_at TIMESTAMP NOT NULL,
     role VARCHAR(20) NOT NULL DEFAULT 'buyer'
 );
 
-CREATE TABLE IF NOT EXISTS category (
+CREATE TABLE IF NOT EXISTS categories (
     id SERIAL PRIMARY KEY,
     category_name VARCHAR(100) NOT NULL,
     description TEXT,
@@ -54,7 +55,7 @@ CREATE TABLE IF NOT EXISTS category (
 
 CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
-    category_id INTEGER REFERENCES category(id),
+    category_id INTEGER REFERENCES categories(id),
     product_name VARCHAR(150) NOT NULL,
     description TEXT,
     price NUMERIC(12, 2) NOT NULL,
@@ -67,7 +68,8 @@ CREATE TABLE IF NOT EXISTS orders (
     user_id INTEGER REFERENCES users(id),
     total_amount NUMERIC(12, 2) NOT NULL,
     status VARCHAR(20) NOT NULL,
-    ordered_at TIMESTAMP NOT NULL
+    ordered_at TIMESTAMP NOT NULL,
+    is_deleted BOOLEAN NOT NULL DEFAULT false
 );
 
 CREATE TABLE IF NOT EXISTS order_items (
@@ -80,7 +82,7 @@ CREATE TABLE IF NOT EXISTS order_items (
 """
 
 TRUNCATE = """
-TRUNCATE TABLE order_items, orders, products, category, users, alembic_version
+TRUNCATE TABLE order_items, orders, products, categories, users, alembic_version
 RESTART IDENTITY CASCADE;
 """
 
@@ -88,7 +90,8 @@ RESTART IDENTITY CASCADE;
 # Sample data (25 rows per table, 10 for category)
 # ---------------------------------------------------------------------------
 
-ALEMBIC_VERSION = [("e298ff03ef56",)]
+# current migration head (after the category -> categories rename)
+ALEMBIC_VERSION = [("a1b2c3d4e5f6",)]
 
 CATEGORY = [
     (1, "Elektronik", "Perangkat elektronik seperti gadget, aksesoris, dan komputer", "2024-01-10 08:00:00"),
@@ -256,7 +259,7 @@ ORDER_ITEMS = [
 
 SEQUENCES = [
     ("alembic_version", None),
-    ("category_id_seq", ("category", "id", 10)),
+    ("categories_id_seq", ("categories", "id", 10)),
     ("users_id_seq", ("users", "id", 20)),
     ("products_id_seq", ("products", "id", 20)),
     ("orders_id_seq", ("orders", "id", 20)),
@@ -278,15 +281,21 @@ def seed(conn):
         print(f"Inserting {len(CATEGORY)} categories...")
         execute_values(
             cur,
-            "INSERT INTO category (id, category_name, description, created_at) VALUES %s",
+            "INSERT INTO categories (id, category_name, description, created_at) VALUES %s",
             CATEGORY,
         )
 
         print(f"Inserting {len(USERS)} users...")
+        # Hash the plaintext sample passwords so seeded users can log in
+        # via /auth/login (which uses Werkzeug check_password_hash).
+        hashed_users = [
+            (uid, username, email, generate_password_hash(raw_password), created_at, role)
+            for (uid, username, email, raw_password, created_at, role) in USERS
+        ]
         execute_values(
             cur,
             "INSERT INTO users (id, username, email, password_hash, created_at, role) VALUES %s",
-            USERS,
+            hashed_users,
         )
 
         print(f"Inserting {len(PRODUCTS)} products...")
