@@ -42,7 +42,7 @@ ALTER TABLE public.alembic_version OWNER TO postgres;
 -- Name: category; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.category (
+CREATE TABLE public.categories (
     id integer NOT NULL,
     category_name character varying(50) NOT NULL,
     description text,
@@ -50,7 +50,7 @@ CREATE TABLE public.category (
 );
 
 
-ALTER TABLE public.category OWNER TO postgres;
+ALTER TABLE public.categories OWNER TO postgres;
 
 --
 -- TOC entry 221 (class 1259 OID 17174)
@@ -74,7 +74,7 @@ ALTER SEQUENCE public.category_id_seq OWNER TO postgres;
 -- Name: category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.category_id_seq OWNED BY public.category.id;
+ALTER SEQUENCE public.category_id_seq OWNED BY public.categories.id;
 
 
 --
@@ -249,7 +249,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 -- Name: category id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.category ALTER COLUMN id SET DEFAULT nextval('public.category_id_seq'::regclass);
+ALTER TABLE ONLY public.categories ALTER COLUMN id SET DEFAULT nextval('public.category_id_seq'::regclass);
 
 
 --
@@ -298,7 +298,7 @@ ALTER TABLE ONLY public.alembic_version
 -- Name: category category_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.category
+ALTER TABLE ONLY public.categories
     ADD CONSTRAINT category_pkey PRIMARY KEY (id);
 
 
@@ -380,7 +380,7 @@ ALTER TABLE ONLY public.orders
 --
 
 ALTER TABLE ONLY public.products
-    ADD CONSTRAINT products_category_id_fkey FOREIGN KEY (category_id) REFERENCES public.category(id);
+    ADD CONSTRAINT products_category_id_fkey FOREIGN KEY (category_id) REFERENCES public.categories(id);
 
 
 -- Completed on 2026-08-29 03:10:24

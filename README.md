@@ -1,6 +1,7 @@
 # RevoShop API
 
 **Live deployment:** https://sevoshop.onrender.com/
+(Flask app hosted on **Render**, PostgreSQL database hosted on **Supabase**.)
 
 ## 1. Overview
 
@@ -48,7 +49,8 @@ appear in many orders.
 | Load testing | **Locust** |
 | Config / secrets | **python-dotenv** |
 | Production server | **gunicorn** |
-| Deployment | Railway / Render / Heroku |
+| App hosting | **Render** |
+| Managed database | **Supabase** (PostgreSQL) |
 
 ## 4. How to Run the Project Locally
 

@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class Category(db.Model):
-    __tablename__ = 'category'
+    __tablename__ = 'categories'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     category_name = db.Column(db.String(50), nullable=False)
@@ -75,7 +75,7 @@ class Product(db.Model):
     __tablename__ = 'products'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    category_id = db.Column(db.ForeignKey('category.id'), nullable=False)
+    category_id = db.Column(db.ForeignKey('categories.id'), nullable=False)
     product_name = db.Column(db.String(50), nullable=False)
     description = db.Column(db.Text)
     price = db.Column(db.Numeric(10, 2), nullable=False)

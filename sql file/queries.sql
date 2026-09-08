@@ -7,8 +7,8 @@ CREATE TABLE users (
     created_at 		TIMESTAMP DEFAULT NOW()
 );
 
--- 3. Create Category Table
-CREATE TABLE category (
+-- 3. Create Categories Table
+CREATE TABLE categories (
     id             	SERIAL PRIMARY KEY,
     category_name   VARCHAR(50) NOT NULL,
     description    	TEXT,
@@ -18,7 +18,7 @@ CREATE TABLE category (
 -- 3. Create Products Table
 CREATE TABLE products (
     id             	SERIAL PRIMARY KEY,
-    category_id		INT NOT NULL REFERENCES category(id),
+    category_id		INT NOT NULL REFERENCES categories(id),
     product_name	VARCHAR(50) NOT NULL,
     description    	TEXT,
     price          	NUMERIC(10,2) NOT NULL,
@@ -69,7 +69,7 @@ INSERT INTO users (username, email, password_hash, created_at) VALUES
 -- ---------------------------------------------------------
 -- 2. Category
 -- ---------------------------------------------------------
-INSERT INTO category (category_name, description, created_at) VALUES
+INSERT INTO categories (category_name, description, created_at) VALUES
 ('Elektronik',      'Perangkat elektronik seperti gadget, aksesoris, dan komputer', '2024-01-10 08:00:00'),
 ('Fashion Pria',     'Pakaian, sepatu, dan aksesoris untuk pria',                    '2024-01-10 08:05:00'),
 ('Fashion Wanita',   'Pakaian, sepatu, dan aksesoris untuk wanita',                  '2024-01-10 08:10:00'),

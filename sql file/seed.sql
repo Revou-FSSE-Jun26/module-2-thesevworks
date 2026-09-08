@@ -36,13 +36,13 @@ INSERT INTO public.alembic_version VALUES ('e298ff03ef56');
 -- Data for Name: category; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.category VALUES (1, 'Elektronik', 'Perangkat elektronik seperti gadget, aksesoris, dan komputer', '2024-01-10 08:00:00');
-INSERT INTO public.category VALUES (2, 'Fashion Pria', 'Pakaian, sepatu, dan aksesoris untuk pria', '2024-01-10 08:05:00');
-INSERT INTO public.category VALUES (3, 'Fashion Wanita', 'Pakaian, sepatu, dan aksesoris untuk wanita', '2024-01-10 08:10:00');
-INSERT INTO public.category VALUES (4, 'Rumah Tangga', 'Peralatan dan perlengkapan rumah tangga', '2024-01-10 08:15:00');
-INSERT INTO public.category VALUES (5, 'Olahraga', 'Peralatan dan perlengkapan olahraga', '2024-01-10 08:20:00');
-INSERT INTO public.category VALUES (6, 'Buku & Alat Tulis', 'Buku, alat tulis, dan perlengkapan kantor', '2024-01-10 08:25:00');
-INSERT INTO public.category VALUES (7, 'Makanan & Minuman', 'Produk makanan dan minuman kemasan', '2024-01-10 08:30:00');
+INSERT INTO public.categories VALUES (1, 'Elektronik', 'Perangkat elektronik seperti gadget, aksesoris, dan komputer', '2024-01-10 08:00:00');
+INSERT INTO public.categories VALUES (2, 'Fashion Pria', 'Pakaian, sepatu, dan aksesoris untuk pria', '2024-01-10 08:05:00');
+INSERT INTO public.categories VALUES (3, 'Fashion Wanita', 'Pakaian, sepatu, dan aksesoris untuk wanita', '2024-01-10 08:10:00');
+INSERT INTO public.categories VALUES (4, 'Rumah Tangga', 'Peralatan dan perlengkapan rumah tangga', '2024-01-10 08:15:00');
+INSERT INTO public.categories VALUES (5, 'Olahraga', 'Peralatan dan perlengkapan olahraga', '2024-01-10 08:20:00');
+INSERT INTO public.categories VALUES (6, 'Buku & Alat Tulis', 'Buku, alat tulis, dan perlengkapan kantor', '2024-01-10 08:25:00');
+INSERT INTO public.categories VALUES (7, 'Makanan & Minuman', 'Produk makanan dan minuman kemasan', '2024-01-10 08:30:00');
 
 
 --
