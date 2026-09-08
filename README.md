@@ -16,6 +16,59 @@ products share a **many-to-many** relationship expressed through an `order_items
 junction table, so a single order can contain multiple products and a product can
 appear in many orders.
 
+## Project Structure
+
+```
+module-2-thesevworks/
+├── app.py                    # Application entry point
+├── models.py                 # SQLAlchemy models
+├── seed.py                   # Database seeding script
+├── locustfile.py             # Load-test scenario
+├── requirements.txt          # Python dependencies
+├── Procfile                  # Deployment config
+├── migrations/               # Database migrations (Alembic)
+├── Snapshot/                 # README screenshots
+│
+├── routes/                   # API endpoints (Flask Blueprints)
+│   ├── auth_routes.py        # POST /auth/login — login, issues a JWT
+│   ├── category_routes.py    # /category — CRUD for categories
+│   ├── orders_routes.py      # /orders — CRUD; total computed server-side
+│   ├── products_routes.py    # /products — CRUD for the catalog
+│   └── users_routes.py       # /users — CRUD for user accounts
+│
+├── sql file/                 # Raw SQL reference
+│   ├── schema.sql            # CREATE TABLE statements (full schema)
+│   ├── seed.sql              # Original SQL sample-data dump
+│   └── queries.sql           # Example / verification queries
+│
+└── tests/                    # Automated pytest suite
+    ├── conftest.py           # Fixtures: test app, client, seeded data
+    ├── test_auth.py          # Login endpoint tests
+    ├── test_category.py      # /category tests
+    ├── test_orders.py        # /orders tests (order flow, validation)
+    ├── test_products.py      # /products tests
+    └── test_users.py         # /users tests
+```
+
+**Application**
+- `app.py` — configures Flask, the database, and registers all blueprints.
+- `models.py` — defines the tables: `User`, `Category`, `Product`, `Order`, `OrderItem`.
+- `routes/` — one file per resource (`auth`, `category`, `orders`, `products`, `users`).
+
+**Database**
+- `migrations/` — versioned schema changes managed by Flask-Migrate.
+- `seed.py` — recreates the schema and loads sample data.
+- `sql file/` — raw `schema.sql`, `seed.sql`, and `queries.sql` for reference.
+
+**Testing & Load**
+- `tests/` — pytest suite covering every endpoint, with fixtures in `conftest.py`.
+- `locustfile.py` — simulates the customer order flow for load testing.
+
+**Config & Docs**
+- `.env` / `.env.example` — environment variables (`.env` is gitignored).
+- `Procfile`, `requirements.txt` — deployment and dependencies.
+- `Snapshot/` — screenshots (ERD, test results, deployment) shown in this README.
+
 ## 2. Features Implemented
 
 - **Full CRUD for products** — create, read (list & by id), update (partial), and delete.
@@ -189,3 +242,4 @@ pgAdmin/DBeaver diagram).
 Full endpoint documentation is available on Postman:
 
 https://documenter.getpostman.com/view/57336695/2sBYAuTXQT
+
