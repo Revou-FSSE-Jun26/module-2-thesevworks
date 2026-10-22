@@ -4,10 +4,20 @@ import os
 from dotenv import load_dotenv
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
+from flask_cors import CORS
 
 migrate = Migrate()
 app = Flask(__name__)
 load_dotenv()
+
+# Allow the frontend (local dev + deployed Vercel site) to call this API.
+# Reads a comma-separated list from CORS_ORIGINS, defaults to "*" (all origins).
+cors_origins = os.getenv("CORS_ORIGINS", "*")
+CORS(
+    app,
+    resources={r"/*": {"origins": [o.strip() for o in cors_origins.split(",")]}},
+    supports_credentials=True,
+)
 
 # PostgreSQL connection:
 # DATABASE_URL=postgresql+psycopg2://postgres:password@localhost:5432/revoshop_db
