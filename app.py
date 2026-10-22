@@ -30,6 +30,17 @@ app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# Engine options untuk deployment (Render + Supabase pooler).
+# Platform hosting seperti Render menutup koneksi TCP yang idle; tanpa
+# pemeriksaan, SQLAlchemy memakai koneksi mati dan request gagal dengan 500
+# (mis. "SSL connection has been closed unexpectedly").
+#   - pool_pre_ping : uji koneksi sebelum dipakai; ganti otomatis jika mati.
+#   - pool_recycle  : daur ulang koneksi lebih tua dari 280 detik (< batas idle).
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_pre_ping": True,
+    "pool_recycle": 280,
+}
+
 jwt = JWTManager(app)
 db = SQLAlchemy(app)
 migrate.init_app(app,db)
