@@ -1,14 +1,12 @@
 from models import User
 from flask import Blueprint, jsonify, request
 from app import db
-# from validation import admin_required
-from flask_jwt_extended import jwt_required 
+from validation import admin_required
 
 users_bp = Blueprint('users', __name__)
 
 @users_bp.route("/", methods=["GET"]) 
-# @jwt_required() 
-# @admin_required 
+@admin_required
 def get_users(): 
     users = User.query.all()
 
@@ -17,6 +15,7 @@ def get_users():
         for user in users ]), 200
 
 @users_bp.route("/<int:user_id>", methods=["GET"])
+@admin_required
 def get_user_by_id(user_id):
     try:
         user = User.query.get(user_id)
@@ -79,6 +78,7 @@ def create_users():
         }), 400
 
 @users_bp.route("/<int:user_id>", methods=["PUT"])
+@admin_required
 def update_user(user_id):
     user = User.query.get(user_id)
     if user is None:
@@ -123,6 +123,7 @@ def update_user(user_id):
 
 
 @users_bp.route("/<int:user_id>", methods=["DELETE"])
+@admin_required
 def delete_user(user_id):
     user = User.query.get(user_id)
     if user is None:

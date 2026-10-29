@@ -59,6 +59,11 @@ def app():
         _db.session.add(user)
         _db.session.flush()  # get user.id
 
+        # Seed an admin user so protected endpoints can be exercised in tests.
+        admin = User(username="AdminSeed", email="admin_seed@email.com", role="admin")
+        admin.hashing_password("adminpassword123")
+        _db.session.add(admin)
+
         order = Order(user_id=user.id, total_amount=5999.99, status="pending")
         _db.session.add(order)
 
@@ -73,3 +78,19 @@ def app():
 @pytest.fixture()
 def client(app):
     return app.test_client()
+
+
+@pytest.fixture()
+def admin_token(client):
+    """Log in as the seeded admin and return the JWT access token."""
+    resp = client.post("/auth/login", json={
+        "email": "admin_seed@email.com",
+        "password": "adminpassword123",
+    })
+    return resp.get_json()["token"]
+
+
+@pytest.fixture()
+def admin_headers(admin_token):
+    """Authorization header carrying the admin token for protected endpoints."""
+    return {"Authorization": f"Bearer {admin_token}"}

@@ -1,14 +1,11 @@
 from models import Product, Category
 from flask import Blueprint, jsonify, request
 from app import db
-# from validation import admin_required
-from flask_jwt_extended import jwt_required 
+from validation import admin_required
 
 products_bp = Blueprint('products', __name__)
 
 @products_bp.route("/", methods=["GET"]) 
-# @jwt_required() 
-# @admin_required 
 def get_products(): 
     products = Product.query.all()
     return jsonify([ 
@@ -26,6 +23,7 @@ def get_product_by_id(product_id):
         return jsonify({"error": str(e)}), 500
 
 @products_bp.route("/", methods=["POST"])
+@admin_required
 def create_product():
     try:
         data = request.get_json(silent=True)
@@ -78,7 +76,7 @@ def create_product():
 
 
 @products_bp.route('/<int:product_id>', methods=['PUT'])
-# @roles_required('seller')
+@admin_required
 def update_product(product_id):
     product = Product.query.get(product_id)
     if product is None:
@@ -133,7 +131,7 @@ def update_product(product_id):
 
 
 @products_bp.route('/<int:product_id>', methods=['DELETE'])
-# @roles_required('admin')
+@admin_required
 def delete_product(product_id):
     product = Product.query.get(product_id)
     if product is None:

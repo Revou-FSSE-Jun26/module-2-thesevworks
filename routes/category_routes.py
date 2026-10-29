@@ -1,14 +1,11 @@
 from models import Category
 from flask import Blueprint, jsonify, request
 from app import db
-# from validation import admin_required
-from flask_jwt_extended import jwt_required 
+from validation import admin_required
 
 category_bp = Blueprint('category', __name__)
 
 @category_bp.route("/", methods=["GET"]) 
-# @jwt_required() 
-# @admin_required 
 def get_categories(): 
     categories = Category.query.all()
 
@@ -28,6 +25,7 @@ def get_category_by_id(category_id):
         return jsonify({"error": str(e)}), 500
 
 @category_bp.route("/", methods=["POST"]) 
+@admin_required
 def create_category():
     try:
         data = request.get_json(silent=True)
@@ -70,6 +68,7 @@ def create_category():
         }), 400
 
 @category_bp.route("/<int:category_id>", methods=["PUT"])
+@admin_required
 def update_category(category_id):
     category = Category.query.get(category_id)
     if category is None:
@@ -106,6 +105,7 @@ def update_category(category_id):
 
 
 @category_bp.route("/<int:category_id>", methods=["DELETE"])
+@admin_required
 def delete_category(category_id):
     category = Category.query.get(category_id)
     if category is None:

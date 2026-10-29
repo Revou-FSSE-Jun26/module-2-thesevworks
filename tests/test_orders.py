@@ -5,10 +5,14 @@ The server computes total_amount from real product prices — the client
 never sends total_amount.
 """
 
+from models import User
 
-def _seeded_user_id(client):
-    users = client.get("/users/").get_json()
-    return next(u for u in users if u["email"] == "jokotest123@email.com")["id"]
+
+def _seeded_user_id(app):
+    """Resolve the seeded buyer id directly from the DB, since GET /users/
+    is now admin-protected."""
+    with app.app_context():
+        return User.query.filter_by(email="jokotest123@email.com").first().id
 
 
 def _a_product(client):
@@ -40,8 +44,8 @@ def test_get_order_not_found(client):
     assert resp.status_code == 404
 
 
-def test_create_order_total_calculated_by_system(client):
-    user_id = _seeded_user_id(client)
+def test_create_order_total_calculated_by_system(client, app):
+    user_id = _seeded_user_id(app)
     product = _a_product(client)
     quantity = 2
 
@@ -60,9 +64,9 @@ def test_create_order_total_calculated_by_system(client):
     assert len(body["order"]["items"]) == 1
 
 
-def test_create_order_ignores_client_total(client):
+def test_create_order_ignores_client_total(client, app):
     """Even if the client sends total_amount, the server ignores it."""
-    user_id = _seeded_user_id(client)
+    user_id = _seeded_user_id(app)
     product = _a_product(client)
 
     resp = client.post("/orders/", json={
@@ -75,8 +79,8 @@ def test_create_order_ignores_client_total(client):
     assert float(resp.get_json()["order"]["total_amount"]) == float(product["price"])
 
 
-def test_create_order_missing_items(client):
-    user_id = _seeded_user_id(client)
+def test_create_order_missing_items(client, app):
+    user_id = _seeded_user_id(app)
     resp = client.post("/orders/", json={"user_id": user_id})
     assert resp.status_code == 400
 
@@ -90,8 +94,8 @@ def test_create_order_invalid_user(client):
     assert resp.status_code == 400
 
 
-def test_create_order_invalid_product(client):
-    user_id = _seeded_user_id(client)
+def test_create_order_invalid_product(client, app):
+    user_id = _seeded_user_id(app)
     resp = client.post("/orders/", json={
         "user_id": user_id,
         "items": [{"product_id": 9999, "quantity": 1}],
@@ -99,8 +103,8 @@ def test_create_order_invalid_product(client):
     assert resp.status_code == 400
 
 
-def test_create_order_zero_quantity(client):
-    user_id = _seeded_user_id(client)
+def test_create_order_zero_quantity(client, app):
+    user_id = _seeded_user_id(app)
     product = _a_product(client)
     resp = client.post("/orders/", json={
         "user_id": user_id,
@@ -110,8 +114,8 @@ def test_create_order_zero_quantity(client):
     assert "greater than 0" in resp.get_json()["error"]
 
 
-def test_update_order_status(client):
-    user_id = _seeded_user_id(client)
+def test_update_order_status(client, app):
+    user_id = _seeded_user_id(app)
     product = _a_product(client)
     created = client.post("/orders/", json={
         "user_id": user_id,
@@ -144,8 +148,8 @@ def test_update_order_not_found(client):
     assert resp.status_code == 404
 
 
-def test_delete_order(client):
-    user_id = _seeded_user_id(client)
+def test_delete_order(client, app):
+    user_id = _seeded_user_id(app)
     product = _a_product(client)
     created = client.post("/orders/", json={
         "user_id": user_id,

@@ -21,59 +21,59 @@ def test_get_category_not_found(client):
     assert resp.status_code == 404
 
 
-def test_create_category(client):
+def test_create_category(client, admin_headers):
     resp = client.post("/category/", json={
         "category_name": "Books",
         "description": "All kinds of books"
-    })
+    }, headers=admin_headers)
     assert resp.status_code == 201
     body = resp.get_json()
     assert body["status"] == "success"
     assert body["category"]["category_name"] == "Books"
 
 
-def test_create_category_missing_name(client):
-    resp = client.post("/category/", json={"description": "no name"})
+def test_create_category_missing_name(client, admin_headers):
+    resp = client.post("/category/", json={"description": "no name"}, headers=admin_headers)
     assert resp.status_code == 400
     assert "category_name" in resp.get_json()["error"]
 
 
-def test_create_category_no_body(client):
-    resp = client.post("/category/", data="not json", content_type="text/plain")
+def test_create_category_no_body(client, admin_headers):
+    resp = client.post("/category/", data="not json", content_type="text/plain", headers=admin_headers)
     assert resp.status_code == 400
 
 
-def test_create_category_duplicate(client):
-    client.post("/category/", json={"category_name": "Toys"})
-    resp = client.post("/category/", json={"category_name": "Toys"})
+def test_create_category_duplicate(client, admin_headers):
+    client.post("/category/", json={"category_name": "Toys"}, headers=admin_headers)
+    resp = client.post("/category/", json={"category_name": "Toys"}, headers=admin_headers)
     assert resp.status_code == 409
 
 
-def test_update_category(client):
-    created = client.post("/category/", json={"category_name": "Garden"}).get_json()
+def test_update_category(client, admin_headers):
+    created = client.post("/category/", json={"category_name": "Garden"}, headers=admin_headers).get_json()
     cat_id = created["category"]["id"]
 
-    resp = client.put(f"/category/{cat_id}", json={"description": "Garden tools"})
+    resp = client.put(f"/category/{cat_id}", json={"description": "Garden tools"}, headers=admin_headers)
     assert resp.status_code == 200
     assert resp.get_json()["category"]["description"] == "Garden tools"
 
 
-def test_update_category_not_found(client):
-    resp = client.put("/category/9999", json={"category_name": "X"})
+def test_update_category_not_found(client, admin_headers):
+    resp = client.put("/category/9999", json={"category_name": "X"}, headers=admin_headers)
     assert resp.status_code == 404
 
 
-def test_delete_category(client):
-    created = client.post("/category/", json={"category_name": "Temporary"}).get_json()
+def test_delete_category(client, admin_headers):
+    created = client.post("/category/", json={"category_name": "Temporary"}, headers=admin_headers).get_json()
     cat_id = created["category"]["id"]
 
-    resp = client.delete(f"/category/{cat_id}")
+    resp = client.delete(f"/category/{cat_id}", headers=admin_headers)
     assert resp.status_code == 200
 
     # confirm it's gone
     assert client.get(f"/category/{cat_id}").status_code == 404
 
 
-def test_delete_category_not_found(client):
-    resp = client.delete("/category/9999")
+def test_delete_category_not_found(client, admin_headers):
+    resp = client.delete("/category/9999", headers=admin_headers)
     assert resp.status_code == 404

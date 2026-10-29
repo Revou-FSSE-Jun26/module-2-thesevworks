@@ -102,7 +102,7 @@ class User(db.Model):
     username = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False, unique=True)
     password_hash = db.Column(db.String(255), nullable=False)
-    role = db.Column(db.String(25), nullable=False, default="buyer", server_default="buyer")
+    role = db.Column(db.Enum('buyer', 'admin', name='user_role'), nullable=False, default='buyer', server_default='buyer')
     created_at = db.Column(db.DateTime, default=datetime.utcnow, server_default=db.func.now())
 
     def hashing_password(self, password):

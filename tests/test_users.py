@@ -1,26 +1,26 @@
 """Tests for /users endpoints."""
 
 
-def test_get_users(client):
-    resp = client.get("/users/")
+def test_get_users(client, admin_headers):
+    resp = client.get("/users/", headers=admin_headers)
     assert resp.status_code == 200
     data = resp.get_json()
     assert isinstance(data, list)
     assert any(u["email"] == "jokotest123@email.com" for u in data)
 
 
-def test_get_user_by_id(client):
+def test_get_user_by_id(client, admin_headers):
     # find the seeded user's real id via the list endpoint
-    users = client.get("/users/").get_json()
+    users = client.get("/users/", headers=admin_headers).get_json()
     joko = next(u for u in users if u["email"] == "jokotest123@email.com")
 
-    resp = client.get(f"/users/{joko['id']}")
+    resp = client.get(f"/users/{joko['id']}", headers=admin_headers)
     assert resp.status_code == 200
     assert resp.get_json()["username"] == "Joko"
 
 
-def test_get_user_not_found(client):
-    resp = client.get("/users/9999")
+def test_get_user_not_found(client, admin_headers):
+    resp = client.get("/users/9999", headers=admin_headers)
     assert resp.status_code == 404
 
 
@@ -76,7 +76,7 @@ def test_create_user_duplicate_email(client):
     assert resp.status_code == 409
 
 
-def test_update_user(client):
+def test_update_user(client, admin_headers):
     created = client.post("/users/", json={
         "username": "Dave",
         "email": "dave@example.com",
@@ -84,17 +84,17 @@ def test_update_user(client):
     }).get_json()
     uid = created["user"]["id"]
 
-    resp = client.put(f"/users/{uid}", json={"username": "David"})
+    resp = client.put(f"/users/{uid}", json={"username": "David"}, headers=admin_headers)
     assert resp.status_code == 200
     assert resp.get_json()["user"]["username"] == "David"
 
 
-def test_update_user_not_found(client):
-    resp = client.put("/users/9999", json={"username": "Ghost"})
+def test_update_user_not_found(client, admin_headers):
+    resp = client.put("/users/9999", json={"username": "Ghost"}, headers=admin_headers)
     assert resp.status_code == 404
 
 
-def test_delete_user(client):
+def test_delete_user(client, admin_headers):
     created = client.post("/users/", json={
         "username": "Eve",
         "email": "eve@example.com",
@@ -102,11 +102,11 @@ def test_delete_user(client):
     }).get_json()
     uid = created["user"]["id"]
 
-    resp = client.delete(f"/users/{uid}")
+    resp = client.delete(f"/users/{uid}", headers=admin_headers)
     assert resp.status_code == 200
-    assert client.get(f"/users/{uid}").status_code == 404
+    assert client.get(f"/users/{uid}", headers=admin_headers).status_code == 404
 
 
-def test_delete_user_not_found(client):
-    resp = client.delete("/users/9999")
+def test_delete_user_not_found(client, admin_headers):
+    resp = client.delete("/users/9999", headers=admin_headers)
     assert resp.status_code == 404

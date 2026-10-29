@@ -24,7 +24,7 @@ def test_get_product_not_found(client):
     assert resp.status_code == 404
 
 
-def test_create_product(client):
+def test_create_product(client, admin_headers):
     # use the seeded category id
     category = client.get("/category/").get_json()[0]
 
@@ -34,120 +34,120 @@ def test_create_product(client):
         "description": "Wireless mouse",
         "price": 25.5,
         "stock": 100
-    })
+    }, headers=admin_headers)
     assert resp.status_code == 201
     body = resp.get_json()
     assert body["status"] == "success"
     assert body["product"]["product_name"] == "Mouse"
 
 
-def test_create_product_missing_fields(client):
-    resp = client.post("/products/", json={"product_name": "Incomplete"})
+def test_create_product_missing_fields(client, admin_headers):
+    resp = client.post("/products/", json={"product_name": "Incomplete"}, headers=admin_headers)
     assert resp.status_code == 400
     assert "Missing required fields" in resp.get_json()["error"]
 
 
-def test_create_product_negative_price(client):
+def test_create_product_negative_price(client, admin_headers):
     category = client.get("/category/").get_json()[0]
     resp = client.post("/products/", json={
         "category_id": category["id"],
         "product_name": "Bad",
         "price": -5,
         "stock": 10
-    })
+    }, headers=admin_headers)
     assert resp.status_code == 400
 
 
-def test_create_product_zero_price(client):
+def test_create_product_zero_price(client, admin_headers):
     category = client.get("/category/").get_json()[0]
     resp = client.post("/products/", json={
         "category_id": category["id"],
         "product_name": "ZeroPrice",
         "price": 0,
         "stock": 10
-    })
+    }, headers=admin_headers)
     assert resp.status_code == 400
     assert "price must be greater than 0" in resp.get_json()["error"]
 
 
-def test_create_product_negative_stock(client):
+def test_create_product_negative_stock(client, admin_headers):
     category = client.get("/category/").get_json()[0]
     resp = client.post("/products/", json={
         "category_id": category["id"],
         "product_name": "NegStock",
         "price": 10,
         "stock": -1
-    })
+    }, headers=admin_headers)
     assert resp.status_code == 400
     assert "stock cannot be negative" in resp.get_json()["error"]
 
 
-def test_create_product_zero_stock_allowed(client):
+def test_create_product_zero_stock_allowed(client, admin_headers):
     category = client.get("/category/").get_json()[0]
     resp = client.post("/products/", json={
         "category_id": category["id"],
         "product_name": "ZeroStock",
         "price": 10,
         "stock": 0
-    })
+    }, headers=admin_headers)
     assert resp.status_code == 201
 
 
-def test_create_product_invalid_price_type(client):
+def test_create_product_invalid_price_type(client, admin_headers):
     category = client.get("/category/").get_json()[0]
     resp = client.post("/products/", json={
         "category_id": category["id"],
         "product_name": "Bad",
         "price": "abc",
         "stock": 10
-    })
+    }, headers=admin_headers)
     assert resp.status_code == 400
 
 
-def test_update_product(client):
+def test_update_product(client, admin_headers):
     category = client.get("/category/").get_json()[0]
     created = client.post("/products/", json={
         "category_id": category["id"],
         "product_name": "Headset",
         "price": 45,
         "stock": 20
-    }).get_json()
+    }, headers=admin_headers).get_json()
     pid = created["product"]["id"]
 
-    resp = client.put(f"/products/{pid}", json={"price": 39.99, "stock": 15})
+    resp = client.put(f"/products/{pid}", json={"price": 39.99, "stock": 15}, headers=admin_headers)
     assert resp.status_code == 200
     body = resp.get_json()
     assert float(body["product"]["price"]) == 39.99
     assert body["product"]["stock"] == 15
 
 
-def test_update_product_not_found(client):
-    resp = client.put("/products/9999", json={"price": 10})
+def test_update_product_not_found(client, admin_headers):
+    resp = client.put("/products/9999", json={"price": 10}, headers=admin_headers)
     assert resp.status_code == 404
 
 
-def test_update_product_invalid_category(client):
+def test_update_product_invalid_category(client, admin_headers):
     products = client.get("/products/").get_json()
     pid = products[0]["id"]
-    resp = client.put(f"/products/{pid}", json={"category_id": 9999})
+    resp = client.put(f"/products/{pid}", json={"category_id": 9999}, headers=admin_headers)
     assert resp.status_code == 404
 
 
-def test_delete_product(client):
+def test_delete_product(client, admin_headers):
     category = client.get("/category/").get_json()[0]
     created = client.post("/products/", json={
         "category_id": category["id"],
         "product_name": "Disposable",
         "price": 1,
         "stock": 1
-    }).get_json()
+    }, headers=admin_headers).get_json()
     pid = created["product"]["id"]
 
-    resp = client.delete(f"/products/{pid}")
+    resp = client.delete(f"/products/{pid}", headers=admin_headers)
     assert resp.status_code == 200
     assert client.get(f"/products/{pid}").status_code == 404
 
 
-def test_delete_product_not_found(client):
-    resp = client.delete("/products/9999")
+def test_delete_product_not_found(client, admin_headers):
+    resp = client.delete("/products/9999", headers=admin_headers)
     assert resp.status_code == 404
